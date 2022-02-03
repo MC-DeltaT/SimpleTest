@@ -18,7 +18,7 @@ namespace stest {
 }
 
 
-#define TEST_CASE(name) class TestCase_##name { \
+#define STEST_CASE(name) class STestCase_##name { \
     public: \
         static void test_func(); \
         static inline auto const register_helper = [] { \
@@ -26,4 +26,4 @@ namespace stest {
             return 0; \
         }(); \
     }; \
-    void TestCase_##name::test_func()
+    void STestCase_##name::test_func()
