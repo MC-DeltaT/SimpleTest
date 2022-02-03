@@ -11,7 +11,7 @@
 
 namespace stest {
 
-    inline bool run_test_case(TestCase const& test_case) {
+    bool run_test_case(TestCase const& test_case) {
         std::cout << test_case.name;
         bool passed = false;
         try {
@@ -33,7 +33,7 @@ namespace stest {
         return passed;
     }
 
-    inline void run_test_cases(std::vector<TestCase> const& test_cases) {
+    void run_test_cases(std::vector<TestCase> const& test_cases) {
         std::cout << "Running " << test_cases.size() << " tests...\n" << std::endl;
         std::vector<std::reference_wrapper<std::string const>> failed_cases;
         failed_cases.reserve(test_cases.size());
