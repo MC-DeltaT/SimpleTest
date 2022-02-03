@@ -9,6 +9,7 @@
 
 namespace stest {
 
+    // Indicates a test case failure. Probably don't catch this anywhere in your own code.
     class TestAssertionFailure : public std::exception {
     public:
         TestAssertionFailure(std::string message) :
@@ -25,6 +26,7 @@ namespace stest {
 
 
     namespace impl {
+        // Throws a TestAssertionFailure with a nice message for the given source location.
         [[noreturn]]
         inline void throw_test_assertion_from(std::source_location location = std::source_location::current()) {
             throw TestAssertionFailure{std::format("\"{}\", line {}", location.file_name(), location.line())};
@@ -32,12 +34,16 @@ namespace stest {
     }
 
 
+    // Asserts that expression is true. If expression is false, then TestAssertionFailure is thrown (and the test case
+    // will exit and fail).
     inline void test_assert(bool expression, std::source_location location = std::source_location::current()) {
         if (!expression) {
             impl::throw_test_assertion_from(location);
         }
     }
 
+    // Asserts that action throws an exception of type E (or derived). If no exception is thrown, then
+    // TestAssertionFailure is thrown (and the test case will exit and fail).
     template<typename E>
     void test_assert_throws(auto&& action, std::source_location location = std::source_location::current()) {
         bool raised = false;
@@ -52,6 +58,7 @@ namespace stest {
         }
     }
 
+    // Unconditionally throws TestAssertionFailure, immediately exiting and failing the test case.
     [[noreturn]]
     inline void fail_test(std::source_location location = std::source_location::current()) {
         impl::throw_test_assertion_from(location);
