@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "assert.hpp"
+#include <stest/assert.hpp>
 
 
 namespace stest {
