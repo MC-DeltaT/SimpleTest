@@ -12,56 +12,51 @@ namespace stest {
     // Indicates a test case failure. Probably don't catch this anywhere in your own code.
     class TestAssertionFailure : public std::exception {
     public:
-        TestAssertionFailure(std::string message) :
-            _message{std::move(message)}
+        TestAssertionFailure(std::source_location location) :
+            _location{std::move(location)},
+            _message{std::format("\"{}\", line {}", location.file_name(), location.line())}
         {}
+
+        std::source_location const& where() const {
+            return _location;
+        }
 
         char const* what() const override {
             return _message.c_str();
         }
 
     private:
+        std::source_location _location;
         std::string _message;
     };
-
-
-    namespace impl {
-        // Throws a TestAssertionFailure with a nice message for the given source location.
-        [[noreturn]]
-        inline void throw_test_assertion_from(std::source_location location = std::source_location::current()) {
-            throw TestAssertionFailure{std::format("\"{}\", line {}", location.file_name(), location.line())};
-        }
-    }
 
 
     // Asserts that expression is true. If expression is false, then TestAssertionFailure is thrown (and the test case
     // will exit and fail).
     inline void test_assert(bool expression, std::source_location location = std::source_location::current()) {
         if (!expression) {
-            impl::throw_test_assertion_from(location);
+            throw TestAssertionFailure{std::move(location)};
         }
     }
 
     // Asserts that action throws an exception of type E (or derived). If no exception is thrown, then
     // TestAssertionFailure is thrown (and the test case will exit and fail).
+    // If an exception is thrown, then this function will return it.
     template<typename E>
-    void test_assert_throws(auto&& action, std::source_location location = std::source_location::current()) {
-        bool raised = false;
+    E test_assert_throws(auto&& action, std::source_location location = std::source_location::current()) {
         try {
             action();
         }
-        catch (E const& e) {
-            raised = true;
+        catch (E& e) {
+            return std::move(e);
         }
-        if (!raised) {
-            impl::throw_test_assertion_from(location);
-        }
+        throw TestAssertionFailure{std::move(location)};
     }
 
     // Unconditionally throws TestAssertionFailure, immediately exiting and failing the test case.
     [[noreturn]]
     inline void fail_test(std::source_location location = std::source_location::current()) {
-        impl::throw_test_assertion_from(location);
+        throw TestAssertionFailure{std::move(location)};
     }
 
 }

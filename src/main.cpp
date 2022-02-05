@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 
 #include <stest/run.hpp>
 #include <stest/test_case.hpp>
@@ -10,5 +11,12 @@ int main() {
         return a.name < b.name;
     });
 
-    stest::run_test_cases(test_cases);
+    auto const success = stest::run_test_cases(test_cases);
+
+    if (success) {
+        return EXIT_SUCCESS;
+    }
+    else {
+        return EXIT_FAILURE;
+    }
 }

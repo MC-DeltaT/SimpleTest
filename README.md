@@ -9,8 +9,8 @@ Ever wanted to smash out a few quick unit tests, but don't want the extensive (b
 
 ## Requirements
 
- - CMake 3.22 or newer
  - C++20
+ - CMake 3.22 or newer (unless you want to build manually)
 
 ## Usage
 
@@ -29,7 +29,13 @@ add_executable(MyUnitTest unit_tests.cpp)
 target_link_libraries(MyUnitTest SimpleTest)
 ```
 
-SimpleTest will inject a `main()` function into the `MyUnitTest` executable that will invoke all the test cases defined in `unit_tests.cpp`.
+SimpleTest will inject a `main()` function into the `MyUnitTest` executable that will invoke all the test cases defined in `unit_tests.cpp`.  
+If you don't want a `main()` injected, link to `SimpleTestLib` instead.
+
+### Without CMake
+
+Add `path/to/SimpleTest/include` to your include directories.
+Build and link the source files in `path/to/SimpleTest/src`.
 
 ### Code
 
@@ -51,3 +57,8 @@ STEST_CASE(FooTest) {
     stest::test_assert(foo(3) == 9);
 }
 ```
+
+## Tests
+
+Yes, even the testing framework has tests! (Otherwise how could you trust your test results?)  
+The test code is contained in `test/` and the CMake target is `SimpleTestTest`.
