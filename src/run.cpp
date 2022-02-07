@@ -11,23 +11,23 @@
 namespace stest {
 
     bool run_test_case(TestCase const& test_case, std::ostream& stream) {
-        stream << test_case.name;
+        stream << test_case.name << ": ";
         bool passed = false;
         try {
             test_case.function();
             passed = true;
         }
         catch (TestAssertionFailure const& e) {
-            stream << ": FAILED - test assertion failed - " << e.what() << std::endl;
+            stream << "FAILED - test assertion failed - " << e.what() << std::endl;
         }
         catch (std::exception const& e) {
-            stream << ": FAILED - unhandled std::exception - " << e.what() << std::endl;
+            stream << "FAILED - unhandled std::exception - " << e.what() << std::endl;
         }
         catch (...) {
-            stream << ": FAILED - unhandled thrown value" << std::endl;
+            stream << "FAILED - unhandled thrown value" << std::endl;
         }
         if (passed) {
-            stream << ": passed" << std::endl;
+            stream << "passed" << std::endl;
         }
         return passed;
     }
