@@ -3,8 +3,8 @@
 #include <cstring>
 #include <iostream>
 #include <source_location>
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
 
 #include <stest/assert.hpp>
 #include <stest/run.hpp>

@@ -17,10 +17,12 @@ namespace stest {
             _message{std::format("\"{}\", line {}", location.file_name(), location.line())}
         {}
 
+        [[nodiscard]]
         std::source_location const& where() const {
             return _location;
         }
 
+        [[nodiscard]]
         char const* what() const override {
             return _message.c_str();
         }
