@@ -96,7 +96,7 @@ int main() {
     {
         std::stringstream stream;
         auto const success = stest::run_test_cases(stest::all_test_cases(), stream);
-        
+
         !success || fail();
 
         auto const text = stream.str();
