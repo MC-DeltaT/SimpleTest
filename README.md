@@ -5,7 +5,8 @@ by Reece Jones
 ## Overview
 
 SimpleTest is designed to be an easy-to-use framework for basic unit testing tasks.  
-Ever wanted to smash out a few quick unit tests, but don't want the extensive - but harder to use - features of, say, GoogleTest? Then SimpleTest may be the framework for you!
+Ever wanted to smash out a few quick unit tests, but don't want the extensive - but harder to use - features of, say, GoogleTest?
+Then SimpleTest may be the framework for you!
 
 ## Features
 
@@ -13,7 +14,6 @@ Ever wanted to smash out a few quick unit tests, but don't want the extensive - 
  - Basic boolean & exception assertions
  - Automatic `main()` generation
  - Concise test output & summary
- - Mostly macro-free
 
 ## Requirements
 
@@ -60,7 +60,7 @@ cmake ..
 cmake --install .
 ```
 
-This installs the SimpleTest source code and exported CMake targets to your system (e.g. on Windows: `C:/Program Files/SimpleTest`).
+This installs the SimpleTest source code and exported CMake targets to your system (e.g. on Windows: `C:/Program Files/SimpleTest`, on Linux: `/usr/local`).
 
 (A custom install location can be specified with the `--prefix` install option, and then pointing CMake to that location via `SimpleTest_ROOT` or `CMAKE_PREFIX_PATH`.)
 
@@ -70,7 +70,7 @@ Then in your project's `CMakeLists.txt`:
 find_package(SimpleTest 1.0.0 REQUIRED)
 
 add_executable(MyUnitTest my_unit_tests.cpp)
-target_link_libraries(MyUnitTest SimpleTest::SimpleTest)
+target_link_libraries(MyUnitTest PRIVATE SimpleTest::SimpleTest)
 ```
 
 SimpleTest will inject a `main()` function into the `MyUnitTest` executable that will invoke all the test cases defined in `my_unit_tests.cpp`.  
