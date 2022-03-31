@@ -16,7 +16,10 @@ namespace stest {
 
     // Contains all test cases for the current program.
     // It's safe to modify this at just about any time (but no thread synchronisation is provided).
-    std::vector<TestCase>& all_test_cases();
+    inline std::vector<TestCase>& all_test_cases() {
+        static std::vector<TestCase> test_cases;
+        return test_cases;
+    }
 
 }
 

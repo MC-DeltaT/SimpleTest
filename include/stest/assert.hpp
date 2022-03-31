@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <format>
 #include <source_location>
 #include <stdexcept>
@@ -44,10 +45,11 @@ namespace stest {
     // Asserts that action throws an exception of type E (or derived). If no exception is thrown, then
     // TestAssertionFailure is thrown (and the test case will exit and fail).
     // If an exception is thrown, then this function will return it.
-    template<typename E>
-    E test_assert_throws(auto&& action, std::source_location location = std::source_location::current()) {
+    template<std::movable E>
+    E test_assert_throws(std::invocable<> auto&& action,
+            std::source_location location = std::source_location::current()) {
         try {
-            action();
+            (void)action();
         }
         catch (E& e) {
             return std::move(e);

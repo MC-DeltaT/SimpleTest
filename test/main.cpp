@@ -13,7 +13,7 @@
 
 static std::size_t failures = 0;
 
-bool fail(std::source_location location = std::source_location::current()) {
+static bool fail(std::source_location location = std::source_location::current()) {
     ++failures;
     std::cout << "Failure on line " << location.line() << std::endl;
     return false;
