@@ -6,9 +6,14 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <stest/assert.hpp>
+#include <stest/stest.hpp>
 #include <stest/run.hpp>
-#include <stest/test_case.hpp>
+
+
+extern bool test_case_pass_run;
+extern bool test_case_fail_assertion_run;
+extern bool test_case_fail_stdexception_run;
+extern bool test_case_fail_throw_run;
 
 
 static std::size_t failures = 0;
@@ -20,30 +25,6 @@ static bool fail(std::source_location location = std::source_location::current()
 }
 
 
-static bool test_case_pass_run = false;
-STEST_CASE(TestCase_Pass) {
-    test_case_pass_run = true;
-}
-
-static bool test_case_fail_assertion_run = false;
-STEST_CASE(TestCase_FailAssertion) {
-    test_case_fail_assertion_run = true;
-    stest::test_assert(false);
-}
-
-static bool test_case_fail_stdexception_run = false;
-STEST_CASE(TestCase_FailStdException) {
-    test_case_fail_stdexception_run = true;
-    throw std::invalid_argument{"Whoops"};
-}
-
-static bool test_case_fail_throw_run = false;
-STEST_CASE(TestCase_FailThrow) {
-    test_case_fail_throw_run = true;
-    throw "hello world";
-}
-
-
 int main() {
     /* assert.hpp */
 
@@ -51,22 +32,24 @@ int main() {
         stest::fail_test();
         fail();
     }
-    catch (stest::TestAssertionFailure const&) {}
+    catch (stest::test_assertion_failure const&) {}
 
     stest::test_assert(42 == 13 + 29);
 
     try {
         stest::test_assert(1 + 1 == 3);
     }
-    catch (stest::TestAssertionFailure const&) {}
+    catch (stest::test_assertion_failure const&) {}
 
     {
-        auto const e = stest::test_assert_throws<std::logic_error>([] { throw std::logic_error{"code broken"}; });
+        std::logic_error const e =
+            stest::test_assert_throws<std::logic_error>([] { throw std::logic_error{"code broken"}; });
         std::strcmp(e.what(), "code broken") == 0 || fail();
     }
 
     {
-        auto const e = stest::test_assert_throws<std::exception>([] { throw std::runtime_error{"Oh no!"}; });
+        std::exception const e =
+            stest::test_assert_throws<std::exception>([] { throw std::runtime_error{"Oh no!"}; });
         std::strcmp(e.what(), "Oh no!") == 0 || fail();
     }
 
@@ -74,10 +57,10 @@ int main() {
         stest::test_assert_throws<std::invalid_argument>([] {});
         fail();
     }
-    catch (stest::TestAssertionFailure const&) {}
+    catch (stest::test_assertion_failure const&) {}
 
 
-    /* test_case.hpp, test_case.cpp */
+    /* test_case.hpp */
 
     stest::all_test_cases().size() == 4 || fail();
 
@@ -91,7 +74,7 @@ int main() {
     }
 
 
-    /* run.hpp, run.cpp */
+    /* run.hpp */
 
     {
         std::stringstream stream;

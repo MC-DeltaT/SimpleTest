@@ -14,32 +14,53 @@ Then SimpleTest may be the framework for you!
  - Basic boolean & exception assertions
  - Automatic `main()` generation
  - Concise test output & summary
+ - No macros required
 
 ## Requirements
 
  - C++20
- - [For CMake build] CMake 3.22 or newer
+ - \[For CMake build\] CMake 3.22 or newer
 
 ## Usage
 
 Include `stest/test_case.hpp` to define test cases, and `stest/assert.hpp` for assertions.  
 Or just include `stest/stest.hpp` to get both.
 
-`STEST_CASE(name) { ... }` is used to define a test case.  
-Assertions include:
-
- - `test_assert(expression)` - asserts `expression` is `true`.
- - `test_assert_throws<E>(function)` - asserts `function` throws `E`.
- - `fail_test()` - immediately fails the test.
-
 Example `my_unit_tests.cpp`:
 
 ```c++
 #include <stest/stest.hpp>
 
-STEST_CASE(FooTest) {
+stest::test_block my_tests = [] {           // Introduces a block scope.
+    stest::test_case("FooTest") = [] {      // Declares a test case.
+        stest::test_assert(foo(3) == 9);    // Ensures an expression is true.
+    };
+};
+```
+
+`test_block` allows us to enter a block scope at namespace scope.
+
+`test_case(name) = body` declares a test case, taking a `std::string` for the name and any callable for the test case body.
+
+`test_assert(expression)` asserts that `expression` is `true`.
+
+Other assertions available are:
+
+ - `test_assert_throws<E>(callable)` - asserts `callable` throws `E`.
+ - `fail_test()` - immediately fails the test.
+
+### Macro-ful (not recommended)
+
+As an alternative, if you really really want to use macros in exchange for even "simpler" code:
+
+```c++
+#include <stest/stest.hpp>
+#include <stest/macros.hpp>
+
+// No test_block required.
+STEST_CASE("FooTest") = [] {
     stest::test_assert(foo(3) == 9);
-}
+};
 ```
 
 ## Importing
@@ -95,4 +116,5 @@ If you want a `main()` to be generated for you, compile and link `path/to/Simple
 ## Tests
 
 Yes, even the testing framework has tests! (Otherwise how could you trust your test results?)  
-The test code is contained in `test/main.cpp` and the CMake target is `SimpleTestTest`. The target will only be built if the CMake variable `SIMPLETEST_BUILD_TEST` is set to `ON`.
+The test code is contained in `test/` and the CMake target is `SimpleTestTest`.
+The target will only be built if the CMake variable `SIMPLETEST_BUILD_TEST` is set to `ON`.

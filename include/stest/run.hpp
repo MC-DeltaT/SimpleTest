@@ -15,14 +15,14 @@ namespace stest {
 
     // Runs a single test case, printing results to stream.
     // Return value indicates if the test case was successful.
-    inline bool run_test_case(TestCase const& test_case, std::ostream& stream = std::cout) {
+    inline bool run_test_case(test_case_t const& test_case, std::ostream& stream = std::cout) {
         stream << test_case.name << ": ";
         bool passed = false;
         try {
             test_case.function();
             passed = true;
         }
-        catch (TestAssertionFailure const& e) {
+        catch (test_assertion_failure const& e) {
             stream << "FAILED - test assertion failed - " << e.what() << std::endl;
         }
         catch (std::exception const& e) {
@@ -39,7 +39,7 @@ namespace stest {
 
     // Runs multiple test cases in succession, printing results to stream.
     // Return value indicates if all test cases were successful.
-    inline bool run_test_cases(std::vector<TestCase> const& test_cases, std::ostream& stream = std::cout) {
+    inline bool run_test_cases(std::vector<test_case_t> const& test_cases, std::ostream& stream = std::cout) {
         stream << "Running " << test_cases.size() << " test cases...\n" << std::endl;
         std::vector<std::reference_wrapper<std::string const>> failed_cases;
         failed_cases.reserve(test_cases.size());
@@ -49,6 +49,7 @@ namespace stest {
                 failed_cases.emplace_back(test_case.name);
             }
         }
+        
         stream << "\nDone" << std::endl;
         auto const passed_count = test_cases.size() - failed_cases.size();
         stream << passed_count << " cases passed" << std::endl;

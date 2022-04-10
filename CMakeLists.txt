@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(SimpleTest VERSION 1.0.0 LANGUAGES CXX)
-# TODO: change version when updating
+# TODO: update version when making changes.
 
 # Library without injected main().
 add_library(SimpleTestLib INTERFACE)
@@ -26,27 +26,30 @@ set_target_properties(SimpleTest PROPERTIES CXX_EXTENSIONS OFF)
 option(SIMPLETEST_BUILD_TEST "Build test executable" OFF)
 if(SIMPLETEST_BUILD_TEST)
     message("Configuring to build SimpleTestTest")
-    add_executable(SimpleTestTest test/main.cpp)
+    add_executable(SimpleTestTest test/main.cpp test/tests.cpp)
     target_link_libraries(SimpleTestTest PRIVATE SimpleTestLib)
     target_compile_features(SimpleTestTest PUBLIC cxx_std_23)
     set_target_properties(SimpleTestTest PROPERTIES CXX_EXTENSIONS OFF)
 endif()
 
-# Set up targets for installation.
-include(GNUInstallDirs)
-install(TARGETS SimpleTestLib SimpleTest EXPORT "${PROJECT_NAME}Targets")
-install(EXPORT "${PROJECT_NAME}Targets" NAMESPACE "${PROJECT_NAME}::" DESTINATION cmake)
-# Have to manually copy source files.
-install(DIRECTORY include/ DESTINATION include)
-install(DIRECTORY src/ DESTINATION src)
+# Don't configure installation if we're part of another project.
+if(PROJECT_IS_TOP_LEVEL)
+    # Set up targets for installation.
+    include(GNUInstallDirs)
+    install(TARGETS SimpleTestLib SimpleTest EXPORT "${PROJECT_NAME}Targets")
+    install(EXPORT "${PROJECT_NAME}Targets" NAMESPACE "${PROJECT_NAME}::" DESTINATION cmake)
+    # Copy source files.
+    install(DIRECTORY include/ DESTINATION include)
+    install(DIRECTORY src/ DESTINATION src)
 
-# Set up Config.cmake and ConfigVersion.cmake files for usage with find_package().
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION cmake)
-write_basic_package_version_file(
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" COMPATIBILITY SameMajorVersion)
-install(FILES
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION cmake)
+    # Set up Config.cmake and ConfigVersion.cmake files for usage with find_package().
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(
+        "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        INSTALL_DESTINATION cmake)
+    write_basic_package_version_file(
+        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" COMPATIBILITY SameMajorVersion)
+    install(FILES
+        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        DESTINATION cmake)
+endif()
