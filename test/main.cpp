@@ -34,6 +34,10 @@ int main() {
     }
     catch (stest::test_assertion_failure const&) {}
 
+    []() consteval {
+        stest::test_assert(9 + 10 == 19);
+    }();
+
     stest::test_assert(42 == 13 + 29);
 
     try {

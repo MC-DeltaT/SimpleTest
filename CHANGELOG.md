@@ -7,6 +7,11 @@ In particular, members of the `stest::detail` namespace and entities named begin
 
 TODO: update when making changes.
 
+## 1.1.0 - 2022/04/20
+
+ - Added `constexpr` support to `test_assert()`.
+ - Added `noexcept` in some places where it should be.
+
 ## 1.0.0 - 2022/04/10
 
 Initial stable implementation, proper CMake setup, and decent documentation.

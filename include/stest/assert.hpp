@@ -20,12 +20,12 @@ namespace stest {
         {}
 
         [[nodiscard]]
-        std::source_location const& where() const {
+        std::source_location const& where() const noexcept {
             return _location;
         }
 
         [[nodiscard]]
-        char const* what() const override {
+        char const* what() const noexcept override {
             return _message.c_str();
         }
 
@@ -37,7 +37,7 @@ namespace stest {
 
     // Asserts that expression is true. If expression is false, then test_assertion_failure is thrown (and the test case
     // will exit and fail).
-    inline void test_assert(bool expression, std::source_location location = std::source_location::current()) {
+    constexpr void test_assert(bool expression, std::source_location location = std::source_location::current()) {
         if (!expression) {
             throw test_assertion_failure{std::move(location)};
         }

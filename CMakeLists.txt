@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(SimpleTest VERSION 1.0.0 LANGUAGES CXX)
+project(SimpleTest VERSION 1.1.0 LANGUAGES CXX)
 # TODO: update version when making changes.
 
 # Library without injected main().
